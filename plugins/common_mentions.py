@@ -3,6 +3,7 @@
 from slackbot.bot import respond_to
 from slackbot.bot import listen_to
 from slackbot.bot import default_reply
+import random
 
 
 @respond_to('あいうえお')
@@ -32,7 +33,13 @@ def ping_mention(message):
 
 @respond_to('レポート|れぽーと')
 def report_mention(message):
-    message.reply('レポートは辛いですよね。頑張ってください。')
+    rnd_num = random.randint(0,2)
+    if rnd_num == 0:
+        message.reply('レポートは辛いですよね。頑張ってください。')
+    elif rnd_num == 1:
+        message.reply('前日の夜にやるようなことにならないよう頑張りましょうね。')
+    elif rnd_num == 2:
+        message.reply('とりあえず提出に間に合うように書き進めるんですよ！！')
 
 
 @respond_to(r'(?i)blackboard')
