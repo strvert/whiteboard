@@ -3,7 +3,7 @@
 import requests
 import json
 from datetime import datetime
-import time
+from datetime import date
 from openweather_token import API_TOKEN
 
 
@@ -21,38 +21,34 @@ class Openweather:
                 '03n':'くもり', '04n':'くもり', '09n':'小雨', '10n':'雨',
                 '11n':'雷雨', '13n':'雪', '50n':'霧'}
 
-    def requestweather(self):
+    def requestWeather(self) -> dict:
         url = self.api.format(
-                city_name = self.city_name, country_code = self.country_code,
-                api_key = self.API_KEY
-                )
+                city_name = self.city_name, country_code = self.country_code, api_key = self.API_KEY)
         response = requests.get(url)
         weather_data = json.loads(response.text)
         return weather_data
 
-    def getOnedayweather(self, request_date):
-        weather_data = self.requestweather()
+    def getOnedayWeather(self, request_date: datetime.date) -> list:
+        weather_data = self.requestWeather()
         oneday_weather_list = []
+
         for weathers in weather_data['list']:
             oneday_weather = weathers['weather'][0]
             weather_datetime = datetime.fromtimestamp(weathers['dt'])
-            weather_date_str = "{0:02d}{1:02d}".format(
-                    weather_datetime.month, weather_datetime.day
-                    )
-            md_str = "{0}月{1}日".format(
-                    weather_datetime.month, weather_datetime.day,
-                    weather_datetime.hour
-                    )
+            weather_date = date.fromtimestamp(weathers['dt'])
+            md_str = "{0}月{1}日".format(weather_datetime.month, weather_datetime.day, weather_datetime.hour)
             h_str = "{0}時".format(weather_datetime.hour)
-            if weather_date_str == request_date:
+            if weather_date == request_date:
                 oneday_weather['date_str'] = md_str
                 oneday_weather['time_str'] = h_str
-                oneday_weather['japanese_main'] = self.japanese_wether[
-                       oneday_weather['icon']
-                       ]
+                oneday_weather['japanese_main'] = self.japanese_wether[oneday_weather['icon']]
                 oneday_weather_list.append(oneday_weather)
 
         return oneday_weather_list
 
     def getCityname(self):
         return self.city_name
+
+    def setCityname(self, name, country='JP'):
+        self.city_name = name
+        self.country_code = country
