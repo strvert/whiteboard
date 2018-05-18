@@ -14,7 +14,10 @@ class WordToDate:
         self.day_words = '{0}|{1}|{2}|{3}'.format(
                 self.today_words, self.tomorrow_words, self.dat_words,
                 self.tda_words)
-        self.today = datetime.today()
+        self.today_date = datetime.today()
+        self.tomorrow_date = datetime.today() + timedelta(days=1)
+        self.dat_date = datetime.today() + timedelta(days=2)
+        self.tda_date = datetime.today() + timedelta(days=3)
 
     def getDaywords(self):
         return self.day_words
@@ -39,10 +42,9 @@ class WordToDate:
             return day_words[0]
 
     def wordToAfterday(self, day_word):
-        if day_word == '今日' or day_word=='きょう':
-            today += timedelta(days=0)
+        if re.search(self.today_words, day_word):
             date_str = "{0:02d}{1:02d}".format(
-                    today.month, today.day
+                    self.today.month, self.today.day
                     )
             md_str = "{0}月{1}日".format(today.month, today.day)
             if datetime.today().hour >= 21:
@@ -51,11 +53,9 @@ class WordToDate:
                         + "ごめんなさい。"
                         )
                 return
-        elif day_word == '明日' or day_word== 'あす' \
-                or day_word=='あした' or day_word=='アシタ':
-            today += timedelta(days=1)
+        elif re.search(self.tomorrow_words, day_word):
             date_str = "{0:02d}{1:02d}".format(
-                    today.month, today.day
+                    self.tomorrow_date.month, self.tomorrow_date.day 
                     )
             md_str = "{0}月{1}日".format(today.month, today.day)
         elif day_word == '明後日' or day_word == 'あさって':
