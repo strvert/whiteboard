@@ -1,3 +1,4 @@
 openweather_token.py
 slackbot_settings.py
 __pycache__
+.idea
